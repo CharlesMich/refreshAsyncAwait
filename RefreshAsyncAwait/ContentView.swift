@@ -8,14 +8,20 @@
 import SwiftUI
 
 struct ContentView: View {
+    private let service = Service()
+    @State private var coins: [Coin] = []
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        List(coins) {
+            CoinView(coin: $0)
         }
-        .padding()
+        .listStyle(.plain)
+        .refreshable {
+            coins = await service.fetchCoins()
+        }
+        .task {
+            coins = await service.fetchCoins()
+        }
     }
 }
 
